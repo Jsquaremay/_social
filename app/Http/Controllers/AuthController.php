@@ -15,15 +15,15 @@ class AuthController extends Controller
         $attrs = $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
-            'phone' => 'required|integer|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'phone_number' => 'required|numeric|unique:users',
+            'password' => 'required|min:8|confirmed',
         ]);
 
         //create user
         $user = User::create([
             'name' =>$attrs['name'],
             'email' =>$attrs['email'],
-            'phone' =>$attrs['phone'],
+            'phone_number' =>$attrs['phone_number'],
             'password' =>bcrypt($attrs['password'])
         ]);
 
