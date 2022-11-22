@@ -4,59 +4,59 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Post;
+use App\Models\Article;
 
 
-class PostController extends Controller
+class ArticleController extends Controller
 {
-    // get all posts
+    // get all articles
     public  function index(){
         return response([
-            'posts' => Post::orderBy('created_at', 'desc')->with('user:id, name, image')->withCount('comments', 'likes')->get()
+            'articles' => Article::orderBy('created_at', 'desc')->with('user:id, name, image')->withCount('comments', 'likes')->get()
         ], 200);
     }
 
-    // get single post 
+    // get single article 
 
     public function show($id){
         return response([
-            'post' => Post::where('id', $id)->withCount('comments', 'likes')->get()
+            'article' => Article::where('id', $id)->withCount('comments', 'likes')->get()
         ], 200);
     }
 
 
-    // create a post
+    // create a article
     public function store(Request $request){
         //validate fields 
         $attrs = $request->validate([
             'body'=> 'required|string'
         ]);
 
-        $post = Post::create([
+        $article = Article::create([
             'body' =>$attrs['body'], 
             'user_id'=> auth()->user()->id
         ]);
 
-        // for now skip for post image
+        // for now skip for article image
 
         return response([
-            'message' => 'Post created',
-            'post' => $post
+            'message' => 'Article created',
+            'post' => $article
         ], 200);
     }
 
-    // update a post
+    // update a article
     public function update(Request $request, $id){
 
-        $post = Post::find($id);
+        $article = Article::find($id);
 
-        if (!$post){
+        if (!$article){
             return response([
-                'message'=> 'Post not found'
+                'message'=> 'Article not found'
             ], 403);
         }
 
-        if($post->user_id != auth()->user()->id){
+        if($article->user_id != auth()->user()->id){
             return response([
                 'message' => 'Permission denied'
             ], 403);
@@ -67,39 +67,39 @@ class PostController extends Controller
             'body'=> 'required|string'
         ]);
 
-        $post->update([
+        $article->update([
             'body'=> $attrs['body']
         ]);
 
-        // for now skip for post image
+        // for now skip for article image
 
         return response([
-            'message' => 'Post update',
-            'post' => $post
+            'message' => 'Article update',
+            'article' => $article
         ], 200);
     }
 
-    //delete post
+    //delete article
     public function destroy($id){
-        $post = Post::find($id);
+        $article = Article::find($id);
 
-        if(!$post){
+        if(!$article){
             return response([
-                'message'=>'Post not found'
+                'message'=>'Article not found'
             ], 403);
         }
 
-        if($post->user_id != auth()->user()->id){
+        if($article->user_id != auth()->user()->id){
             return response([
                 'message'=>'Permission denied'
             ], 403);
         }
-        $post->comments()->delete();
-        $post->comments()->delete();
-        $post->delete();
+        $article->comments()->delete();
+        $article->comments()->delete();
+        $article->delete();
 
         return response([
-            'message' => 'Post delete'
+            'message' => 'Article delete'
         ], 200);
     }
 }

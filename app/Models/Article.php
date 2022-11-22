@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Comment;
 use App\Models\Like;
 
-class Post extends Model
+class Article extends Model
 {
     use HasFactory;
 

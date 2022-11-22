@@ -3,33 +3,33 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Post;
+use App\Models\Article;
 use App\Models\Comment;
 
 class CommentController extends Controller
 {
-    //get all comments of a post
+    //get all comments of a article
     public function index($id){
-        $post = Post::find($id);
+        $article = Article::find($id);
 
-        if(!$post){
+        if(!$article){
             return response([
-                'message'=> 'Post not found'
+                'message'=> 'Article not found'
             ], 403);
         }
 
         return response([
-            'post'=> $post->comments()->with('user:id, name, image')->get()
+            'article'=> $article->comments()->with('user:id')->get()
         ], 200);
     }
 
     // create a comment 
     public function store(Request $request, $id){
-        $post = Post::find($id);
+        $article = Article::find($id);
 
-        if(!$post){
+        if(!$article){
             return response([
-                'message'=> 'Post not found'
+                'message'=> 'Article not found'
             ], 403);
         }
         //validate fields
@@ -39,7 +39,7 @@ class CommentController extends Controller
 
         Comment::create([
             'comment' => $attrs['comment'],
-            'post_id' => $id, 
+            'article_id' => $id, 
             'user_id' => auth()->user()->id 
         ]);
 
@@ -60,7 +60,7 @@ class CommentController extends Controller
             ], 403);
         }
 
-        if($post->user_id != auth()->user()->id){
+        if($comment->user_id != auth()->user()->id){
             return response([
                 'message' => 'Permission denied'
             ], 403);

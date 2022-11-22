@@ -3,28 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Post;
+use App\Models\Article;
 use App\Models\Like;
 
 class LikeController extends Controller
 {
     //like or unlike
-    public function like($id){
-        $post = Post::find($id);
+    public function likes($id){
+        $article = Article::find($id);
 
-        if(!$post){
+        if(!$article){
             return response([
-                'message' => 'Post not found'
+                'message' => 'Article not found'
             ], 403);
         }
 
-        $like = $post->likes()->where('user_id', auth()->user()->id)->first();
+        $like = $article->likes()->where('user_id', auth()->user()->id)->first();
 
         //if not liked then like
 
         if(!$like){
             Like::create([
-                'post_id' => $id, 
+                'article-id' => $id, 
                 'user_id' => auth()->user()->id
             ]);
         }
